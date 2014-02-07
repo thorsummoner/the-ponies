@@ -1,0 +1,6 @@
+<svg width="2" height="2" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <path id="svg_1" d="m0,0l2,0l-2,2" stroke-width="0" fill="#000000" stroke="#000000"/>
+  <path fill="#FF00FF" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" d="m0,2l2,-2l0,2" id="svg_2"/>
+ </g>
+</svg>
