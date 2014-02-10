@@ -4,9 +4,10 @@
 		background-color: grey;
 		width: 100%; height: 100%;
 		margin: 0; padding: 0;
+		overflow: hidden;
 	}
 	svg {
-		background-color: white;
+		background-color: black;
 	}
 </style>
 <script type="text/javascript">
@@ -26,7 +27,46 @@ include('js/uuid.js')
 include('js/Svg.js')
 
 window.main = function () {
-	var canvas = new Svg('canvas');
-	canvas.maximize();
+	var canvas = new Svg('canvas')
+	// Todo: embed event register so 'maximize' works like a service.
+	canvas.maximize()
+	window.addEventListener("resize", function(){canvas.maximize()})
+
+			var xmlns = canvas.xmlns
+			var svgElem = canvas
+
+  			var g = document.createElementNS (xmlns, "g");
+            svgElem.appendChild (g);
+            g.setAttributeNS (null, 'transform', 'matrix(1,0,0,-1,0,300)');
+
+                // draw linear gradient
+            var defs = document.createElementNS (xmlns, "defs");
+            var grad = document.createElementNS (xmlns, "linearGradient");
+            grad.setAttributeNS (null, "id", "gradient");
+            grad.setAttributeNS (null, "x1", "0%");
+            grad.setAttributeNS (null, "x2", "0%");
+            grad.setAttributeNS (null, "y1", "100%");
+            grad.setAttributeNS (null, "y2", "0%");
+            var stopTop = document.createElementNS (xmlns, "stop");
+            stopTop.setAttributeNS (null, "offset", "0%");
+            stopTop.setAttributeNS (null, "stop-color", "#ff0000");
+            grad.appendChild (stopTop);
+            var stopBottom = document.createElementNS (xmlns, "stop");
+            stopBottom.setAttributeNS (null, "offset", "100%");
+            stopBottom.setAttributeNS (null, "stop-color", "#0000ff");
+            grad.appendChild (stopBottom);
+            defs.appendChild (grad);
+            g.appendChild (defs);
+
+
+
+	// var node = document.createElementNS(canvas.xmlns, 'image')
+	// node.setAttributeNS(canvas.xmlns, 'xlink:href', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==')
+	// node.setAttributeNS(canvas.xmlns, 'x', '100')
+	// node.setAttributeNS(canvas.xmlns, 'y', '100')
+	// node.setAttributeNS(canvas.xmlns, 'width', '100')
+	// node.setAttributeNS(canvas.xmlns, 'height', '100')
+	// canvas.appendChild(node)
+
 }
 </script></head><body></body></html>
