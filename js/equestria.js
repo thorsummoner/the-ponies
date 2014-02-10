@@ -1,4 +1,3 @@
-
 debugClock = function () {
 	id = 'debug-clock'
 	var node = document.createElementNS(canvas.xmlns, 'text')
@@ -23,6 +22,7 @@ debugClock = function () {
 
 		node.textContent = Date() + ' :: ' + date
 	}, equestria.time.tickrate)
+	// TODO introduce variable tickrate based on stock tickrate / fastforward multiplier
 }
 
 debugSpeed = function () {
