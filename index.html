@@ -24,11 +24,11 @@ window.onload = function() {this.main()};
 include('js/json.js')
 include('js/log.js')
 include('js/uuid.js')
-include('js/Svg.js')
+include('js/svg.js')
 include('js/equestria.js')
 
 window.main = function () {
-	var canvas = new Svg('canvas')
+	var canvas = new svg('canvas')
 	// Todo: embed event register so 'maximize' works like a service.
 	canvas.maximize()
 	window.addEventListener("resize", function(){canvas.maximize()})
