@@ -1,4 +1,4 @@
-var Svg = function(id, parent, xmlns) {
+var svg = function(id, parent, xmlns) {
 	var xmlns  = xmlns ? xmlns : "http://www.w3.org/2000/svg"
 	var parent = parent ? document.querySelector(parent) : document.body
 
