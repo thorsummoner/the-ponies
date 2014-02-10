@@ -74,6 +74,13 @@ equestria = {
 		epoch:       new Date().getTime(),
 		now:         new Date().getTime(),
 	},
+	lifespan: {
+		'short': 25,
+		'medium': 50,
+		'normal': 90,
+		'long': 190,
+		'epic': 960,
+	},
 	sky: [
 		{stop: '0',   name: "midnight", 	color: "#0d001f"},
 		{stop: '10',  name: "midnight", 	color: "#0d001f"},
