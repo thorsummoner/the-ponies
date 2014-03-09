@@ -19,25 +19,31 @@
  * @return void
  */
 window.include = function(url) {
+	self = this.include
+
+	if (undefined === self.included) {
+		self.included = []
+	}
+
 	if (url !== undefined) {
 		script = document.createElement('script')
 		script.src = url
 		script.onload = function() {window.include()}
 
-		if (undefined === this.includes) {
-			this.includes = Array()
+		if (undefined === self.includes) {
+			self.includes = Array()
 			document.head.appendChild(script)
+			self.included.push(script)
 		} else {
-			window.includes.push(script)
+			self.includes.push(script)
 		}
 	} else {
-		if (0 === window.includes.length) {
-			window.includes = undefined
+		if (0 === self.includes.length) {
+			self.includes = undefined
 		} else {
-			script = window.includes.shift()
-			console.log('loading next')
-			console.log(script)
+			script = self.includes.shift()
 			document.head.appendChild(script)
+			self.included.push(script)
 		}
 	}
 }
