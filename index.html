@@ -2,9 +2,7 @@
 <style type="text/css">
 	html, body {
 		background:
-		url(
-			data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3gMJBjYgaLcvqgAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAK0lEQVQ4y2OcOXPmfwY84OzZs/ikGZgYKASjBgwGA1gIxbOxsfFoIA5/AwAHZQhTm7rVdAAAAABJRU5ErkJggg==
-		);
+		url(images/src/transparent_background.png);
 		width: 100%; height: 100%;
 		margin: 0; padding: 0;
 		overflow: hidden;
@@ -81,7 +79,7 @@ window.main = function () {
 	var scene  = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(
 		settings.fov, window.innerWidth / window.innerHeight,
-		settings.clipNear, settings.clipFar
+		settings.clipNear, 10000
 	);
 
 	controls = new THREE.OrbitControls( camera );
@@ -96,26 +94,19 @@ window.main = function () {
 
 	// Game Geometry
 
-	var geometry = new THREE.CubeGeometry(1,1,1);
-	var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-	var cube = new THREE.Mesh( geometry, material );
-	scene.add( cube );
-
-
-
 	// Grid
 
-	var size = settings.chunk.camera.x, step = 1;
+	var size = settings.chunk.camera.x * 16, step = 16;
 
 	var geometry = new THREE.Geometry();
 
 	for ( var i = - size; i <= size; i += step ) {
 
-		geometry.vertices.push( new THREE.Vector3( - size, 0, i ) );
-		geometry.vertices.push( new THREE.Vector3(   size, 0, i ) );
+		geometry.vertices.push( new THREE.Vector3( - size, 0.5, i ) );
+		geometry.vertices.push( new THREE.Vector3(   size, 0.5, i ) );
 
-		geometry.vertices.push( new THREE.Vector3( i, 0, - size ) );
-		geometry.vertices.push( new THREE.Vector3( i, 0,   size ) );
+		geometry.vertices.push( new THREE.Vector3( i, 0.5, - size ) );
+		geometry.vertices.push( new THREE.Vector3( i, 0.5,   size ) );
 
 	}
 
@@ -134,7 +125,8 @@ window.main = function () {
 
 	// SKYBOX
 	// var axes = new THREE.AxisHelper((settings.clipFar - 10) / 1.414);
-	var axes = new THREE.AxisHelper(100);
+	var axes = new THREE.AxisHelper(5000);
+	axes.rotation.y = Math.PI/4;
 	scene.add( axes );
 
 	var imagePrefix = "images/src/skybox-test/";
@@ -150,6 +142,7 @@ window.main = function () {
 		}));
 	var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
 	var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+	skyBox.rotation.y = Math.PI/4;
 	scene.add( skyBox );
 
 
