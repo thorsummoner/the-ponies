@@ -51,6 +51,7 @@ window.onload = function() {this.main()};
 include('js/json.js')
 include('js/log.js')
 include('js/uuid.js')
+include('js/ajax.js')
 include('js/three-js/three.min.js')
 
 // include('js/svg.js')
@@ -62,11 +63,14 @@ include('js/three-js/stats.min.js')
 // include('js/three-js/CSS3DRenderer.js')
 
 include('js/the-ponies/settings.js')
+include('js/the-ponies/texture.js')
 include('js/the-ponies/tile-engine.js')
 
-var camera, renderer
+var camera, renderer;
+var objects = [];
 
 window.main = function () {
+	texture.init();
 
 	// Stats
 	stats = new Stats();
@@ -95,26 +99,39 @@ window.main = function () {
 	// Game Geometry
 
 	// Grid
-
-	var size = settings.chunk.camera.x * 16, step = 16;
+	var size = 500, step = 50;
 
 	var geometry = new THREE.Geometry();
 
 	for ( var i = - size; i <= size; i += step ) {
 
-		geometry.vertices.push( new THREE.Vector3( - size, 0.5, i ) );
-		geometry.vertices.push( new THREE.Vector3(   size, 0.5, i ) );
+		geometry.vertices.push( new THREE.Vector3( - size, 0, i ) );
+		geometry.vertices.push( new THREE.Vector3(   size, 0, i ) );
 
-		geometry.vertices.push( new THREE.Vector3( i, 0.5, - size ) );
-		geometry.vertices.push( new THREE.Vector3( i, 0.5,   size ) );
+		geometry.vertices.push( new THREE.Vector3( i, 0, - size ) );
+		geometry.vertices.push( new THREE.Vector3( i, 0,   size ) );
 
 	}
 
-	var material = new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 0.2 } );
+	var material = new THREE.LineBasicMaterial( {
+		color: 'skyblue', opacity: 0.2, transparent: true,
+		linewidth: 4
+	} );
 
 	var line = new THREE.Line( geometry, material );
 	line.type = THREE.LinePieces;
 	scene.add( line );
+
+
+	plane = new THREE.Mesh( new THREE.PlaneGeometry( 1000, 1000 ), new THREE.MeshBasicMaterial() );
+	plane.rotation.x = - Math.PI / 2;
+	plane.visible = false;
+	scene.add( plane );
+
+	objects.push( plane );
+
+	mouse2D = new THREE.Vector3( 0, 10000, 0.5 );
+
 
 	// Camera
 
@@ -143,6 +160,7 @@ window.main = function () {
 	var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
 	var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
 	skyBox.rotation.y = Math.PI/4;
+	skyBox.position.y = 200
 	scene.add( skyBox );
 
 
