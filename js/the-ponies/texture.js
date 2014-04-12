@@ -3,6 +3,7 @@ texture = {
 	textures: {},
 	init: function () {
 		this._batch(json.decode(ajax('js/the-ponies/texture/yudhaikeledai.json')));
+		this._batch(json.decode(ajax('js/the-ponies/texture/BonesWolbach.json')));
 	},
 	_batch: function (files) {
 		for (file in files) {

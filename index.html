@@ -109,6 +109,7 @@ window.main = function () {
 				);
 
 				grid_segment = hilbert_index[0].distanceTo(hilbert_index[1])
+				grid_segment_half = grid_segment / 2
 
 				tiles = [];
 
@@ -116,8 +117,21 @@ window.main = function () {
 
 					hilbert_index[i].vertex = hilbert_index[i];
 					hilbert_index[i].geometry = new THREE.PlaneGeometry(grid_segment, grid_segment);
+						// Grid Lines
+						var gridline_material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+						var gridline_geometry = new THREE.Geometry();
+						// Note, lines not optimized! basically every line that isn't on the edge is overlaping another line.
+							gridline_geometry.vertices.push(new THREE.Vector3(hilbert_index[i].vertex.x - grid_segment_half, 2, hilbert_index[i].vertex.z + grid_segment_half));
+							gridline_geometry.vertices.push(new THREE.Vector3(hilbert_index[i].vertex.x + grid_segment_half, 2, hilbert_index[i].vertex.z + grid_segment_half));
+							gridline_geometry.vertices.push(new THREE.Vector3(hilbert_index[i].vertex.x + grid_segment_half, 2, hilbert_index[i].vertex.z - grid_segment_half));
+							gridline_geometry.vertices.push(new THREE.Vector3(hilbert_index[i].vertex.x - grid_segment_half, 2, hilbert_index[i].vertex.z - grid_segment_half));
+							gridline_geometry.vertices.push(gridline_geometry.vertices[0]);
+						var gridline = new THREE.Line(gridline_geometry, gridline_material);
+						scene.add(gridline);
+						// Grid Lines End
+					// I for got what this for loop was supposed to do, it can probably go.
 					for (a in texture.textures) break;
-					hilbert_index[i].material = texture[texture.textures['Yudhaikeledai Lush Green Slightly Overgrown']].material;
+					hilbert_index[i].material = texture[texture.textures['BonesWolbach Dry Summer Grass']].material;
 					hilbert_index[i].mesh = new THREE.Mesh(
 						hilbert_index[i].geometry,
 						hilbert_index[i].material
@@ -141,7 +155,7 @@ window.main = function () {
 	axes.rotation.y = Math.PI/4;
 	scene.add( axes );
 
-	var imagePrefix = "images/src/skybox-test/";
+	var imagePrefix = "images/src/skybox-ponyville-by-boneswolbach-512/";
 	var directions  = ["RIGHT", "LEFT", "TOP", "BOTTOM", "FRONT", "BACK"];
 	var imageSuffix = ".png";
 	var skyGeometry = new THREE.CubeGeometry( 5000, 5000, 5000 );
