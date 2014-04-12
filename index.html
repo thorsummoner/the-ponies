@@ -60,6 +60,7 @@ include('js/three-js/three.min.js')
 include('js/three-js/OrbitControls.js')
 include('js/three-js/BasicShader.js')
 include('js/three-js/stats.min.js')
+include('js/three-js/hilbert2D.js')
 // include('js/three-js/CSS3DRenderer.js')
 
 include('js/the-ponies/settings.js')
@@ -98,46 +99,54 @@ window.main = function () {
 
 	// Game Geometry
 
-	// Grid
-	var size = 500, step = 50;
+	// Tiles
+				hilbert_index = [].concat(
+					hilbert2D(
+						new THREE.Vector3(0, 0.2, 0),
+						1600,
+						3
+					)
+				);
 
-	var geometry = new THREE.Geometry();
+				grid_segment = hilbert_index[0].distanceTo(hilbert_index[1])
+				grid_segment_half = grid_segment / 2
 
-	for ( var i = - size; i <= size; i += step ) {
+				tiles = [];
 
-		geometry.vertices.push( new THREE.Vector3( - size, 0, i ) );
-		geometry.vertices.push( new THREE.Vector3(   size, 0, i ) );
+				for (var i = hilbert_index.length - 1; i >= 0; i--) {
 
-		geometry.vertices.push( new THREE.Vector3( i, 0, - size ) );
-		geometry.vertices.push( new THREE.Vector3( i, 0,   size ) );
+					hilbert_index[i].vertex = hilbert_index[i];
+					hilbert_index[i].geometry = new THREE.PlaneGeometry(grid_segment, grid_segment);
+						// Grid Lines
+						var gridline_material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+						var gridline_geometry = new THREE.Geometry();
+						// Note, lines not optimized! basically every line that isn't on the edge is overlaping another line.
+							gridline_geometry.vertices.push(new THREE.Vector3(hilbert_index[i].vertex.x - grid_segment_half, 2, hilbert_index[i].vertex.z + grid_segment_half));
+							gridline_geometry.vertices.push(new THREE.Vector3(hilbert_index[i].vertex.x + grid_segment_half, 2, hilbert_index[i].vertex.z + grid_segment_half));
+							gridline_geometry.vertices.push(new THREE.Vector3(hilbert_index[i].vertex.x + grid_segment_half, 2, hilbert_index[i].vertex.z - grid_segment_half));
+							gridline_geometry.vertices.push(new THREE.Vector3(hilbert_index[i].vertex.x - grid_segment_half, 2, hilbert_index[i].vertex.z - grid_segment_half));
+							gridline_geometry.vertices.push(gridline_geometry.vertices[0]);
+						var gridline = new THREE.Line(gridline_geometry, gridline_material);
+						scene.add(gridline);
+						// Grid Lines End
+					// I for got what this for loop was supposed to do, it can probably go.
+					for (a in texture.textures) break;
+					hilbert_index[i].material = texture[texture.textures['BonesWolbach Dry Summer Grass']].material;
+					hilbert_index[i].mesh = new THREE.Mesh(
+						hilbert_index[i].geometry,
+						hilbert_index[i].material
+					);
+					hilbert_index[i].mesh.position.x = hilbert_index[i].vertex.x;
+					hilbert_index[i].mesh.position.z = hilbert_index[i].vertex.z;
 
-	}
-
-	var material = new THREE.LineBasicMaterial( {
-		color: 'skyblue', opacity: 0.2, transparent: true,
-		linewidth: 4
-	} );
-
-	var line = new THREE.Line( geometry, material );
-	line.type = THREE.LinePieces;
-	scene.add( line );
-
-
-	plane = new THREE.Mesh( new THREE.PlaneGeometry( 1000, 1000 ), new THREE.MeshBasicMaterial() );
-	plane.rotation.x = - Math.PI / 2;
-	plane.visible = false;
-	scene.add( plane );
-
-	objects.push( plane );
-
-	mouse2D = new THREE.Vector3( 0, 10000, 0.5 );
-
+					hilbert_index[i].mesh.lookAt(new THREE.Vector3(hilbert_index[i].mesh.position.x, 1, hilbert_index[i].mesh.position.z));
+					scene.add(hilbert_index[i].mesh);
+				};
 
 	// Camera
-
-	camera.position.y = 5;
-	camera.position.x = 10;
-	camera.position.z = 10;
+	camera.position.y = 100;
+	camera.position.x = 100;
+	camera.position.z = 100;
 	// camera.rotation.y += 0.01;
 
 	// SKYBOX
@@ -146,7 +155,7 @@ window.main = function () {
 	axes.rotation.y = Math.PI/4;
 	scene.add( axes );
 
-	var imagePrefix = "images/src/skybox-test/";
+	var imagePrefix = "images/src/skybox-ponyville-by-boneswolbach-512/";
 	var directions  = ["RIGHT", "LEFT", "TOP", "BOTTOM", "FRONT", "BACK"];
 	var imageSuffix = ".png";
 	var skyGeometry = new THREE.CubeGeometry( 5000, 5000, 5000 );
