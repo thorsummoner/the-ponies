@@ -1,0 +1,93 @@
+html, body {
+	/*position: fixed;*/
+	width: 100%; height: 100%;
+	margin: 0; padding: 0;
+	image-rendering: pixelated;
+}
+
+#canvas {
+	box-sizing:border-box;
+	padding-bottom: 4.5cm;
+	outline: 10px solid black;
+	background-clip: content-box;
+	background-image: url('/img/transparent_background.png');
+	height: 100%;
+}
+
+#hud {
+	position: absolute;
+	bottom: 0;
+	width: 100%; height: 4.5cm;
+	display: flex;
+	flex-flow: col wrap;
+	justify-content: flex-start;
+	align-content: flex-start;
+	align-items: flex-end;
+}
+
+#hud:before {
+	position: absolute;
+	left: 0; top: 0;
+	width: 100%; height: 100%;
+	content: "";
+	background-image: linear-gradient(to bottom, #100fb6, #080057 3px, #080057);
+	opacity: 0.9;
+	z-index: -1;
+}
+
+#status {
+	display: flex;
+	flex-flow: col wrap;
+	justify-content: flex-start;
+	align-content: flex-start;
+	align-items: flex-end;
+
+	background: linear-gradient(to right, #a5a5bc, #292980);
+	padding: 2px 0 2.5mm 6mm;
+	border: 0 solid #40378a;
+	border-width: 1px 1px 0 0;
+	border-top-left-radius: 6mm;
+	border-top-right-radius: 15mm 50%;
+	border-bottom-right-radius: 15mm 50%;
+}
+
+/* Particularly used by `portrait`s. */
+ul {
+	display: flex;
+	margin: 0; padding: 0;
+	flex-flow: col wrap;
+	justify-content: flex-start;
+	align-content: flex-start;
+	align-items: flex-start;
+}
+li {
+	list-style-type: none;
+}
+#portraits {
+	position: relative;
+	width: 8cm; height: 4cm;
+	flex-flow: row wrap;
+}
+.portrait {
+	position: relative;
+	box-sizing: content-box;
+	background-image: linear-gradient(to right, #9b98b9, #d8d9df);
+	width: 2cm; height: 2cm;
+	padding: 0px;
+	border-radius: 9px;
+}
+.portrait.active {
+	background-image: linear-gradient(to right, #36d4d6, #0e75bc);
+}
+.portrait:before {
+	position: absolute;
+	box-sizing: border-box;
+	top: 0; left: 0;
+	width: 100%; height: 100%;
+	padding: 3px;
+
+	content: "";
+	background-clip: content-box;
+	background-image: linear-gradient(to right, #0e046a, #1a04ed);
+	border-radius: 6px;
+}
