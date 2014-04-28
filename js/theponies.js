@@ -1,11 +1,14 @@
+
 window.theponies = {
-	camera:           new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 ),
 	container:        document.querySelector('#canvas'),
+	camera:           undefined,
+	cameraWidth:      undefined,
+	cameraHeight:     undefined,
 	cube:             undefined,
 	cubeGeo:          new THREE.BoxGeometry( 50, 50, 50 ),
 	cubeMaterial:     new THREE.MeshLambertMaterial({
 		color: 0xfeb74c, ambient: 0x00ff80, shading: THREE.FlatShading,
-		map: THREE.ImageUtils.loadTexture( "textures/square-outline-textured.png" ) ,
+		// map: THREE.ImageUtils.loadTexture( "textures/square-outline-textured.png" ) ,
 	}),
 	i:                undefined,
 	intersector:      undefined,
@@ -20,9 +23,10 @@ window.theponies = {
 	raycaster:        undefined,
 	renderer:         new THREE.WebGLRenderer( { antialias: true } ),
 	rollOveredFace:   undefined,
-	rollOverGeo:      new THREE.BoxGeometry( 50, 50, 50 ),
-	rollOverMaterial: new THREE.MeshBasicMaterial( { color: 0xff0000, opacity: 0.5, transparent: true } ),
-	rollOverMesh:     new THREE.Mesh( rollOverGeo, rollOverMaterial ),
+	rollOverMesh:     new THREE.Mesh(
+		new THREE.BoxGeometry( 50, 50, 50 ),
+		new THREE.MeshBasicMaterial( { color: 0xff0000, opacity: 0.5, transparent: true } )
+	),
 	scene:            new THREE.Scene(),
 	stats:            new Stats(),
 	theta:            45 * 0.5,
@@ -30,14 +34,21 @@ window.theponies = {
 	voxelPosition:    new THREE.Vector3(),
 
 	init: function () {
+		this.cameraWidth = this.container.clientWidth;
+		this.cameraHeight = this.container.clientHeight
+			- parseInt(window.getComputedStyle(this.container).paddingBottom.replace(/\..+/, '')) + 1
+		;
+
+		this.camera = new THREE.PerspectiveCamera( 45, this.cameraWidth / this.cameraHeight, 1, 10000 )
 
 		this.scene.add( this.rollOverMesh );
+		this.camera.position.y = 800;
 
 		this.grid();
 		this.lights();
 
 		this.renderer.setClearColor( 0xf0f0f0 );
-		this.renderer.setSize( window.innerWidth, window.innerHeight );
+		this.renderer.setSize(this.cameraWidth, this.cameraHeight);
 
 		this.container.appendChild( this.renderer.domElement );
 
@@ -52,16 +63,17 @@ window.theponies = {
 		this.container.addEventListener( 'keyup', this.onDocumentKeyUp, false );
 	},
 
-	function animate() {
+	animate: function() {
+		self = window.theponies;
 
-		requestAnimationFrame( animate );
+		requestAnimationFrame( self.animate );
 
-		render();
-		this.stats.update();
+		self.render();
+		self.stats.update();
 
 	},
 
-	function render() {
+	render: function() {
 
 		if ( this.isCtrlDown ) {
 
@@ -71,7 +83,7 @@ window.theponies = {
 
 		this.raycaster = this.projector.pickingRay( this.mouse2D.clone(), this.camera );
 
-		var this.intersects = this.raycaster.intersectObjects( this.objects );
+		this.intersects = this.raycaster.intersectObjects( this.objects );
 
 		if ( this.intersects.length > 0 ) {
 
@@ -86,8 +98,8 @@ window.theponies = {
 
 		}
 
-		this.camera.position.x = 1400 * Math.sin( THREE.Math.degToRad( theta ) );
-		this.camera.position.z = 1400 * Math.cos( THREE.Math.degToRad( theta ) );
+		this.camera.position.x = 1400 * Math.sin( THREE.Math.degToRad( this.theta ) );
+		this.camera.position.z = 1400 * Math.cos( THREE.Math.degToRad( this.theta ) );
 
 		this.camera.lookAt( this.scene.position );
 
@@ -137,20 +149,26 @@ window.theponies = {
 	onWindowResize: function() {
 		self = window.theponies;
 
-		self.camera.aspect = window.innerWidth / window.innerHeight;
+
+		self.cameraWidth = self.container.clientWidth;
+		self.cameraHeight = self.container.clientHeight
+			- parseInt(window.getComputedStyle(self.container).paddingBottom.replace(/\..+/, '')) + 1
+		;
+
+		self.camera.aspect = self.cameraWidth / self.cameraHeight;
 		self.camera.updateProjectionMatrix();
 
-		renderer.setSize( window.innerWidth, window.innerHeight );
-
+		self.renderer.setSize( self.cameraWidth, self.cameraHeight );
 	},
 
 	getRealIntersector: function( intersects ) {
+		self = window.theponies;
 
 		for( i = 0; i < intersects.length; i++ ) {
 
 			intersector = intersects[ i ];
 
-			if ( intersector.object != rollOverMesh ) {
+			if ( intersector.object != self.rollOverMesh ) {
 
 				return intersector;
 
@@ -186,8 +204,8 @@ window.theponies = {
 
 		event.preventDefault();
 
-		self.mouse2D.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-		self.mouse2D.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+		self.mouse2D.x = ( event.clientX / (self.cameraWidth) ) * 2 - 1;
+		self.mouse2D.y = - ( event.clientY / (self.cameraHeight) ) * 2 + 1;
 
 	},
 
@@ -218,11 +236,11 @@ window.theponies = {
 
 			} else {
 
-				intersector = getRealIntersector( intersects );
-				setVoxelPosition( intersector );
+				intersector = self.getRealIntersector( intersects );
+				self.setVoxelPosition( intersector );
 
-				var voxel = new THREE.Mesh( cubeGeo, cubeMaterial );
-				voxel.position.copy( voxelPosition );
+				var voxel = new THREE.Mesh( self.cubeGeo, self.cubeMaterial );
+				voxel.position.copy( self.voxelPosition );
 				voxel.matrixAutoUpdate = false;
 				voxel.updateMatrix();
 				self.scene.add( voxel );
@@ -260,4 +278,7 @@ window.theponies = {
 
 }
 
-document.addEventListener('DOMContentLoaded', window.theponies.init);
+window.addEventListener("load", function(){
+	window.theponies.init();
+	window.theponies.animate();
+}, false);
