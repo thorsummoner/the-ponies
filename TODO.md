@@ -1,0 +1,8 @@
+- [ ] Build solid 2d grid manager
+  - [ ] The grid itself
+  - [ ] The tile texture
+  - [ ] THe items on that tile and thier z-indexing
+- [ ] Build 3d (or 2.5 d) views into the grid
+- [ ] implement rudamentary build/buy modes
+- [ ] Extend grid system in a mincreaft-like infinite world
+- [ ] Write server/client software capable of putting everyone in a single world? wat do
